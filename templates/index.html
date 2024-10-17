@@ -46,17 +46,17 @@
             {% endfor %}
         </ul>
         
-        <h3 class="mb-3">Improved CV</h3>
-        <div class="mb-3">
-            <a href="/download/improved?improved_cv={{ improved_cv|urlencode }}" class="btn btn-success">Download Improved CV</a>
-        </div>
-        <pre class="bg-dark text-light p-3 rounded">{{ improved_cv }}</pre>
+        {% if improved_sections %}
+        <h2 class="mb-3">Improved CV</h2>
+        {% for section, content in improved_sections.items() %}
+        <h3 class="mb-3">{{ section }}</h3>
+        <pre class="bg-dark text-light p-3 rounded">{{ content }}</pre>
+        {% endfor %}
         
-        <h3 class="mb-3">Translated CV (English)</h3>
         <div class="mb-3">
-            <a href="/download/translated?translated_cv={{ translated_cv|urlencode }}" class="btn btn-info">Download Translated CV</a>
+            <a href="{{ url_for('download_pdf', filename=pdf_path) }}" class="btn btn-success">Download Improved CV (PDF)</a>
         </div>
-        <pre class="bg-dark text-light p-3 rounded">{{ translated_cv }}</pre>
+        {% endif %}
         {% endif %}
     </div>
     

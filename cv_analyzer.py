@@ -61,6 +61,7 @@ def analyze_cv(cv_text):
 
 def split_cv_into_sections(cv_text):
     sections = {
+        "Profile": "",
         "Personal Information": "",
         "Education": "",
         "Work Experience": "",
@@ -71,7 +72,9 @@ def split_cv_into_sections(cv_text):
     lines = cv_text.split('\n')
     
     for line in lines:
-        if re.match(r'education|qualifications', line.lower()):
+        if re.match(r'profile|summary|objective', line.lower()):
+            current_section = "Profile"
+        elif re.match(r'education|qualifications', line.lower()):
             current_section = "Education"
         elif re.match(r'work experience|employment|professional experience', line.lower()):
             current_section = "Work Experience"
@@ -84,15 +87,17 @@ def split_cv_into_sections(cv_text):
 
 def improve_cv(cv_text, analysis):
     sections = split_cv_into_sections(cv_text)
-    improved_sections = []
+    improved_sections = {}
 
-    for section_name, section_content in sections.items():
-        prompt = f"""Improve the following {section_name} section of a CV. Make it more professional, concise, and impactful:
-
-{section_content}
-
-Improved version:"""
-        
+    # Improve only the profile section
+    profile_content = sections.get("Profile", "")
+    if profile_content:
+        prompt = (
+            "Improve the following profile section of a CV. "
+            "Make it more professional, concise, and impactful:\n\n"
+            f"{profile_content}\n\n"
+            "Improved version:"
+        )
         try:
             response = openai.Completion.create(
                 engine="text-davinci-002",
@@ -102,13 +107,18 @@ Improved version:"""
                 stop=None,
                 temperature=0.7,
             )
-            improved_section = response.choices[0].text.strip()
-            improved_sections.append(f"{section_name}:\n{improved_section}")
+            improved_profile = response.choices[0].text.strip()
+            improved_sections["Profile"] = improved_profile
         except Exception as e:
-            print(f"Error improving {section_name} section: {str(e)}")
-            improved_sections.append(f"{section_name}:\n{section_content}")
+            print(f"Error improving Profile section: {str(e)}")
+            improved_sections["Profile"] = profile_content
 
-    return "\n\n".join(improved_sections)
+    # Keep other sections as they are
+    for section_name, section_content in sections.items():
+        if section_name != "Profile":
+            improved_sections[section_name] = section_content
+
+    return improved_sections
 
 def translate_cv(cv_text):
     translator = Translator()
