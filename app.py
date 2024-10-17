@@ -87,6 +87,19 @@ def view_cv(cv_id):
         return redirect(url_for('dashboard'))
     return render_template('view_cv.html', cv=cv)
 
+@app.route('/delete_cv/<int:cv_id>', methods=['POST'])
+@login_required
+def delete_cv(cv_id):
+    cv = CV.query.get_or_404(cv_id)
+    if cv.user_id != current_user.id:
+        flash('You do not have permission to delete this CV.')
+        return redirect(url_for('dashboard'))
+    
+    db.session.delete(cv)
+    db.session.commit()
+    flash('CV deleted successfully.')
+    return redirect(url_for('dashboard'))
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
