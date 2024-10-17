@@ -89,11 +89,18 @@ def improve_cv(cv_text, analysis):
     sections = split_cv_into_sections(cv_text)
     improved_sections = {}
 
+    section_prompts = {
+        "Profile": "Improve the following profile section of a CV. Make it more concise, impactful, and highlight key strengths:",
+        "Personal Information": "Organize and format the following personal information section of a CV:",
+        "Education": "Enhance the following education section of a CV. Highlight key achievements and relevant coursework:",
+        "Work Experience": "Improve the following work experience section of a CV. Use action verbs, quantify achievements, and focus on relevant responsibilities:",
+        "Skills": "Refine the following skills section of a CV. Organize skills into categories and highlight the most relevant ones:"
+    }
+
     for section_name, section_content in sections.items():
         if section_content.strip():
             prompt = (
-                f"Improve the following {section_name} section of a CV. "
-                "Make it more professional, concise, and impactful:\n\n"
+                f"{section_prompts.get(section_name, 'Improve the following section of a CV:')}\n\n"
                 f"{section_content}\n\n"
                 "Improved version:"
             )
