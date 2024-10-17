@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Analyzer and Improver</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">CV Analyzer and Improver</h1>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="mb-3">
+                <label for="file" class="form-label">Upload your CV (PDF or DOCX)</label>
+                <input type="file" class="form-control" id="file" name="file" accept=".pdf,.docx" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze and Improve</button>
+        </form>
+        
+        {% if analysis %}
+        <h2 class="mb-3">Analysis Results</h2>
+        <ul class="list-group mb-4">
+            <li class="list-group-item">Word count: {{ analysis.word_count }}</li>
+            <li class="list-group-item">Unique words: {{ analysis.unique_words }}</li>
+            <li class="list-group-item">
+                Most common words:
+                <ul>
+                    {% for word, count in analysis.most_common %}
+                    <li>{{ word }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        
+        <h3 class="mb-3">Improvement Suggestions</h3>
+        <ul class="list-group mb-4">
+            {% for suggestion in analysis.suggestions %}
+            <li class="list-group-item">{{ suggestion }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3 class="mb-3">Improved CV</h3>
+        <div class="mb-3">
+            <a href="/download/improved?improved_cv={{ improved_cv|urlencode }}" class="btn btn-success">Download Improved CV</a>
+        </div>
+        <pre class="bg-dark text-light p-3 rounded">{{ improved_cv }}</pre>
+        
+        <h3 class="mb-3">Translated CV (English)</h3>
+        <div class="mb-3">
+            <a href="/download/translated?translated_cv={{ translated_cv|urlencode }}" class="btn btn-info">Download Translated CV</a>
+        </div>
+        <pre class="bg-dark text-light p-3 rounded">{{ translated_cv }}</pre>
+        {% endif %}
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
