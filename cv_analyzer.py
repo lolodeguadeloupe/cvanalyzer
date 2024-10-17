@@ -89,38 +89,44 @@ def improve_cv(cv_text, analysis):
     sections = split_cv_into_sections(cv_text)
     improved_sections = {}
 
-    # Improve only the profile section
-    profile_content = sections.get("Profile", "")
-    if profile_content:
-        prompt = (
-            "Improve the following profile section of a CV. "
-            "Make it more professional, concise, and impactful:\n\n"
-            f"{profile_content}\n\n"
-            "Improved version:"
-        )
-        try:
-            response = openai.Completion.create(
-                engine="text-davinci-002",
-                prompt=prompt,
-                max_tokens=200,
-                n=1,
-                stop=None,
-                temperature=0.7,
-            )
-            improved_profile = response.choices[0].text.strip()
-            improved_sections["Profile"] = improved_profile
-        except Exception as e:
-            print(f"Error improving Profile section: {str(e)}")
-            improved_sections["Profile"] = profile_content
-
-    # Keep other sections as they are
     for section_name, section_content in sections.items():
-        if section_name != "Profile":
+        if section_content.strip():
+            prompt = (
+                f"Improve the following {section_name} section of a CV. "
+                "Make it more professional, concise, and impactful:\n\n"
+                f"{section_content}\n\n"
+                "Improved version:"
+            )
+            try:
+                response = openai.Completion.create(
+                    engine="text-davinci-002",
+                    prompt=prompt,
+                    max_tokens=300,
+                    n=1,
+                    stop=None,
+                    temperature=0.7,
+                )
+                if isinstance(response, dict) and 'choices' in response:
+                    improved_content = response['choices'][0]['text'].strip()
+                else:
+                    improved_content = section_content
+                improved_sections[section_name] = improved_content
+            except Exception as e:
+                print(f"Error improving {section_name} section: {str(e)}")
+                improved_sections[section_name] = section_content
+        else:
             improved_sections[section_name] = section_content
 
     return improved_sections
 
 def translate_cv(cv_text, target_language):
     translator = Translator()
-    translated = translator.translate(cv_text, dest=target_language)
-    return translated.text
+    try:
+        translated = translator.translate(cv_text, dest=target_language)
+        if hasattr(translated, 'text'):
+            return translated.text
+        else:
+            return cv_text
+    except Exception as e:
+        print(f"Error translating CV: {str(e)}")
+        return cv_text
