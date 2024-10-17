@@ -57,10 +57,19 @@
         </ul>
         
         {% if improved_sections %}
-        <h2 class="mb-3">Improved CV</h2>
+        <h2 class="mb-3">CV Improvements</h2>
         {% for section, content in improved_sections.items() %}
-        <h3 class="mb-3">{{ section }}</h3>
-        <pre class="bg-dark text-light p-3 rounded">{{ content }}</pre>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">{{ section }}</h3>
+            </div>
+            <div class="card-body">
+                <h4>Original</h4>
+                <pre class="bg-dark text-light p-3 rounded">{{ original_sections[section] }}</pre>
+                <h4>Improved</h4>
+                <pre class="bg-dark text-light p-3 rounded">{{ content }}</pre>
+            </div>
+        </div>
         {% endfor %}
         
         <div class="mb-3">

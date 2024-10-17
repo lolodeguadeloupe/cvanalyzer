@@ -32,6 +32,7 @@ def index():
                 cv_text = extract_text(temp_file.name, filename.split('.')[-1])
             
             analysis = analyze_cv(cv_text)
+            original_sections = split_cv_into_sections(cv_text)
             improved_sections = improve_cv(cv_text, analysis)
             
             # Translate improved sections
@@ -42,7 +43,7 @@ def index():
             # Generate PDF with the translated content
             pdf_path = generate_pdf_with_same_design(translated_sections, filename)
             
-            return render_template('index.html', analysis=analysis, improved_sections=translated_sections, pdf_path=pdf_path)
+            return render_template('index.html', analysis=analysis, original_sections=original_sections, improved_sections=translated_sections, pdf_path=pdf_path)
         
         return render_template('index.html', error="Invalid file format")
     
