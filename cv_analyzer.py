@@ -5,8 +5,10 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from googletrans import Translator
 
+# Download required NLTK data
 nltk.download('punkt')
 nltk.download('stopwords')
+nltk.download('punkt_tab')
 
 def extract_text(file_path, file_type):
     if file_type == 'pdf':
@@ -73,4 +75,3 @@ def translate_cv(cv_text):
     translator = Translator()
     translated = translator.translate(cv_text, dest='en')
     return translated.text
-
