@@ -21,17 +21,7 @@
                 <label for="file" class="form-label">Upload your CV (PDF or DOCX)</label>
                 <input type="file" class="form-control" id="file" name="file" accept=".pdf,.docx" required>
             </div>
-            <div class="mb-3">
-                <label for="target_language" class="form-label">Select target language</label>
-                <select class="form-select" id="target_language" name="target_language">
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="zh-cn">Chinese (Simplified)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Analyze, Improve, and Translate</button>
+            <button type="submit" class="btn btn-primary">Analyze and Improve</button>
         </form>
         
         {% if analysis %}
@@ -57,20 +47,18 @@
         </ul>
         
         {% if improved_sections %}
-        <h2 class="mb-3">CV Improvements</h2>
-        {% for section, content in improved_sections.items() %}
+        <h2 class="mb-3">Profile Improvement</h2>
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="mb-0">{{ section }}</h3>
+                <h3 class="mb-0">Profile</h3>
             </div>
             <div class="card-body">
                 <h4>Original</h4>
-                <pre class="bg-dark text-light p-3 rounded">{{ original_sections[section] }}</pre>
+                <pre class="bg-dark text-light p-3 rounded">{{ original_sections['Profile'] }}</pre>
                 <h4>Improved</h4>
-                <pre class="bg-dark text-light p-3 rounded">{{ content }}</pre>
+                <pre class="bg-dark text-light p-3 rounded">{{ improved_sections['Profile'] }}</pre>
             </div>
         </div>
-        {% endfor %}
         
         <div class="mb-3">
             <a href="{{ url_for('download_pdf', filename=pdf_path) }}" class="btn btn-success">Download Improved CV (PDF)</a>

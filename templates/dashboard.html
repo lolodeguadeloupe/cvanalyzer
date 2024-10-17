@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CV Analyzer and Improver</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Dashboard</h1>
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('index') }}">CV Analyzer</a>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </nav>
+        
+        <h2 class="mb-3">Your CVs</h2>
+        {% if cvs %}
+            <div class="row">
+                {% for cv in cvs %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ cv.filename }}</h5>
+                                <p class="card-text">Uploaded on: {{ cv.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                <a href="{{ url_for('view_cv', cv_id=cv.id) }}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>You haven't uploaded any CVs yet.</p>
+        {% endif %}
+        
+        <a href="{{ url_for('index') }}" class="btn btn-success mt-3">Upload a new CV</a>
+    </div>
+</body>
+</html>
