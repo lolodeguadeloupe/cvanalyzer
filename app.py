@@ -20,12 +20,13 @@ def index():
             return render_template('index.html', error="No file part")
         
         file = request.files['file']
+        target_language = request.form.get('target_language', 'en')
         
         if file.filename == '':
             return render_template('index.html', error="No selected file")
         
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename) if file.filename else ''
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 file.save(temp_file.name)
                 cv_text = extract_text(temp_file.name, filename.split('.')[-1])
@@ -33,13 +34,15 @@ def index():
             analysis = analyze_cv(cv_text)
             improved_sections = improve_cv(cv_text, analysis)
             
-            # Convert improved sections back to text
-            improved_cv_text = "\n\n".join([f"{section}:\n{content}" for section, content in improved_sections.items()])
+            # Translate improved sections
+            translated_sections = {}
+            for section, content in improved_sections.items():
+                translated_sections[section] = translate_cv(content, target_language)
             
-            # Generate PDF with the same design
-            pdf_path = generate_pdf_with_same_design(improved_sections, filename)
+            # Generate PDF with the translated content
+            pdf_path = generate_pdf_with_same_design(translated_sections, filename)
             
-            return render_template('index.html', analysis=analysis, improved_sections=improved_sections, pdf_path=pdf_path)
+            return render_template('index.html', analysis=analysis, improved_sections=translated_sections, pdf_path=pdf_path)
         
         return render_template('index.html', error="Invalid file format")
     

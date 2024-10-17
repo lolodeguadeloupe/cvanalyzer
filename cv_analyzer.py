@@ -120,7 +120,7 @@ def improve_cv(cv_text, analysis):
 
     return improved_sections
 
-def translate_cv(cv_text):
+def translate_cv(cv_text, target_language):
     translator = Translator()
-    translated = translator.translate(cv_text, dest='en')
+    translated = translator.translate(cv_text, dest=target_language)
     return translated.text
